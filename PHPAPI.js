@@ -31,28 +31,49 @@ function callPHP(){
   var req = http.request(options, function(res) {
     res.setEncoding('utf8');
     res.on('data', function (chunk) { 
-      emitter.emit('data',chunk);
-      emitter.emit('object',JSON.parse(chunk));
+        //console.log('PHPAPI:get data :',chunk);
+        emitter.emit('data',chunk);
+        try{
+          var obj=JSON.parse(chunk);
+          emitter.emit('object',obj);        
+        }catch(e){
+          //console.log('PHPAPI:failed emit object event :',e);
+        }
     });
   });
   req.on('error',function(e){emitter.emit('error',e)});
   req.write(querystring.stringify(postData));
   req.end();
 }
-exports.setHost=function(hostname){
+
+exports.setHost=setHostname;
+exports.setHostname=setHostname;
+function setHostname(hostname){
   options.hostname=hostname;
 }
-exports.setApiPath = function (path) {
+
+exports.setApiPath = setAPIPath;
+exports.setPath = setAPIPath;
+function setAPIPath (path) {
   options.path=path;
 }
-exports.removeAllListener=function(){
+
+exports.reset=removeAllListeners;
+exports.removeAllListeners=removeAllListeners;
+function removeAllListeners(){
   emitter.removeAllListeners();
 }
 
-exports.callApi=function (obj){
+exports.callApi=callPHPAPI;
+exports.call=callPHPAPI;
+exports.callAction=function(action){
+  callPHPAPI({'action':action});
+}
+function callPHPAPI(obj){
   postData=obj;
   callPHP();
 }
+
 exports.on=function (event_name,event_handler){
   emitter.on(event_name,event_handler);
 }
