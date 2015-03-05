@@ -32,6 +32,7 @@ function callPHP(){
     res.setEncoding('utf8');
     res.on('data', function (chunk) { 
       emitter.emit('data',chunk);
+      emitter.emit('object',JSON.parse(chunk));
     });
   });
   req.on('error',function(e){emitter.emit('error',e)});
@@ -44,10 +45,35 @@ exports.setHost=function(hostname){
 exports.setApiPath = function (path) {
   options.path=path;
 }
+exports.removeAllListener=function(){
+  emitter.removeAllListeners();
+}
+
 exports.callApi=function (obj){
   postData=obj;
   callPHP();
 }
-exports.on=function (event_name,event_handle){
-  emitter.on(event_name,event_handle);
+exports.on=function (event_name,event_handler){
+  emitter.on(event_name,event_handler);
 }
+
+// exports.syncCallApi=function (obj){
+//   var returnObj={};
+//   var load_complete=false;
+//   var time_out=false;
+//   postData=obj;
+//   emitter.on('data',function (data){returnObj=data;load_complete=true;});
+//   emitter.on('error',function (data){returnObj=data;load_complete=true;});
+//   callPHP();
+//   setInterval();(function(){
+//     time_out=true;
+//     console.log('time out');
+//   }, 50);
+//   do{
+//     if(load_complete){
+//       console.log('data get');
+//       emitter.removeAllListeners();
+//       return returnObj;
+//     }
+//   }while(!time_out)
+// }
