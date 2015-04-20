@@ -5,7 +5,8 @@ var emitter=new events.EventEmitter();
 /**
  * This is a simple php api caller base on event dispatch model.
  * var phpapi=require('PhpApi');
- * phpapi.on('data',function (data){console.log(data);})
+ * phpapi.on('data',function (e){console.log(e);})
+ * phpapi.on('object',function(e){console.log(e);})
  * phpapi.on('error',function(e){console.log(e);})
  * phpapi.setApiPath('/zweitehorizont/api/system/system_info.php');
  * phpapi.setHost('google.com');
